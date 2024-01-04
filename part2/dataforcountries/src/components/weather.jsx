@@ -3,7 +3,7 @@ import axios from "axios";
 
 const Weather = ({ city }) => {
     const [weather, setWeather] = useState(null)
-    const api_key = import.meta.env.OW_API_KEY;
+    const api_key = import.meta.env.REACT_APP_API_KEY;
     console.log(api_key)
     useEffect(() => {
         if (!weather) {
