@@ -32,34 +32,36 @@ const Persons = ({ people, onClick }) => (
   </div>
 )
 
-const Notification = ({ message }) => {
-  if (message.length == 0) {
-    return null
-  } else {
-    if (message.includes("removed")) {
-      const type = "error";
-      return (
-        <div className={type}>
-          {message}
-        </div>
-      )
-    } else {
-      const type = "message";
-      return (
-        <div className={type}>
-          {message}
-        </div>
-      )
-    }
+// Fix part2 hardcoding Notification problem
+const Notification = ({ info }) => {
+  if (!info.message) {
+    return
   }
+
+  const style = {
+    color: info.type==='error' ? 'red' : 'green',
+    background: 'lightgrey',
+    fontSize: 20,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10
+  }
+
+  return (
+    <div style={style}>
+      {info.message}
+    </div>
+  )
 }
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState({ message: '',  type: 'message'})
 
   // Fetch the data with db.json
   useEffect(() => {
@@ -71,10 +73,16 @@ const App = () => {
   }, [])
 
 
+  const notifyWith = (message, type='message') => {
+    setMessage({message, type})
+    setTimeout(() => {
+      setMessage({ message: null} )
+    }, 3000)
+  }
+
   const addName = (event) => {
     event.preventDefault();
     const newObject = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber,
     }
@@ -92,8 +100,7 @@ const App = () => {
             setNewNumber("")
           })
           .catch((error) => {
-            setMessage(`Information of ${newName} has already been removed from server`);
-            setTimeout(() => setMessage(""), 5000) 
+            notifyWith(`Information of ${newName} has already been removed from server`, 'error');
             console.error(`Adding ${newName}`, error);
           })
       } else {
@@ -102,18 +109,18 @@ const App = () => {
     } else {
       personService
         .create(newObject)
-        .then(response => {
-          console.log(response)
-          setPersons(persons.concat(newObject))
-          setMessage(`Added ${newName}`)
-          setTimeout(() => {
-            setMessage("")
-          }, 3000)
+        .then((createdPerson) => {
+          setPersons(persons.concat(createdPerson))
+          notifyWith(`Added ${newName}`, 'message')
+          window.alert(`${newName} is already added to phonebook.`)
+        })
+        .catch((error) => {
+          console.error(error.response.data.error);
+          notifyWith(`[error] ${error.response.data.error}`, 'error')
         })
 
-      window.alert(`${newName} is already added to phonebook.`)
-      setNewName("")
-      setNewNumber("")
+        setNewName("")
+        setNewNumber("")
     }
   }
 
@@ -148,7 +155,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification info={message} />
       <Filter text={"filter shown with:"} value={newFilter} onChange={handleFilter} />
       <h3>Add a new</h3>
       <PersonForm onSubmit={addName} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
