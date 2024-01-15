@@ -54,7 +54,7 @@ describe('favorite blog', () => {
   ];
 
   test('when there are six blogs, the author with most likes is as follows ', () => {
-    const result = listHelper.mostLikesLodash(blogs);
+    const result = listHelper.mostLikes(blogs);
     const mostLikes = {
       author: 'Edsger W. Dijkstra',
       likes: 17

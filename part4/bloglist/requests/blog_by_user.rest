@@ -1,0 +1,10 @@
+post http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjVhNDY2YTBjMjU1OWNmNTI0ZTA5ODQxIiwiaWF0IjoxNzA1MzQyODEzLCJleHAiOjE3MDUzNDY0MTN9.LDLqhG46APOxBR_4H9Xen25t5RNz6dX_CdpyUhPlpj0
+
+{
+    "title": "Geospatial Analysis",
+    "author": "Charlie Zhang",
+    "url": "http://charliezhang.net/GeoSpatialAnalysis",
+    "likes": 23
+}
