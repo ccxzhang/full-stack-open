@@ -7,7 +7,9 @@
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "build:ui": "rm -rf dist && cd ../bloglist-frontend/ && npm run build && cp -r dist ../bloglist",
+    "deploy:full": "npm run build:ui && npm run deploy"
   },
   "author": "Charlie Zhang",
   "license": "ISC",
