@@ -1,6 +1,14 @@
-import Togglable from './Togglable';
+import { useState } from 'react';
 
 const Blog = ({ blog, updateLikes, removeBlog }) => {
+
+  const [visible, setVisible] = useState(false);
+
+  const changeVisibility = () => {
+    setVisible(!visible);
+  };
+
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -27,20 +35,22 @@ const Blog = ({ blog, updateLikes, removeBlog }) => {
   };
 
   return (
-    <div style={blogStyle}>
-      {blog.title} {blog.author} <Togglable buttonLabel="view">
-        <div>
-          <ul> URL: {blog.url} </ul>
-          <ul>
-            Likes: {blog.likes}
-            <button type="submit" onClick={hanldeUpdate}>like</button>
-          </ul>
-          <ul> Author: {blog.author} </ul>
-          <button type="submit" onClick={handleDelete}>remove</button>
-        </div>
-      </Togglable>
+    <div style={blogStyle} className='blog'>
+      <div className='title-author'>{blog.title} {blog.author}</div>
+      {!visible && <button onClick={changeVisibility}>view</button>}
+      {visible &&
+      <>
+        <button onClick={changeVisibility}>hide</button>
+        <ul>URL: {blog.url} </ul>
+        <ul> Likes: {blog.likes}
+          <button type="submit" onClick={hanldeUpdate}>like</button>
+        </ul>
+        <ul> {blog?.user?.name} </ul>
+        <button type="submit" onClick={handleDelete}>remove</button>
+      </>}
     </div>
   );
 };
+
 
 export default Blog;

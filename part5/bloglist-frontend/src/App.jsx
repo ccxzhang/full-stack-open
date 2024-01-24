@@ -13,11 +13,6 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState({ 'message': null, 'type': null });
   const [user, setUser] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
-  const [newBlog, setNewBlog] = useState({
-    'title': '',
-    'author': '',
-    'url': ''
-  });
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -59,24 +54,15 @@ const App = () => {
     setUser(null);
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setNewBlog({
-      ...newBlog,
-      [name]: value
-    });
-  };
 
-  const addBlog = async (event) => {
+  const addBlog = async (newBlog) => {
     blogFormRef.current.toggleVisibility();
-    event.preventDefault();
     const returnedBlog = await blogService.create(newBlog);
     setRefreshData(!refreshData);
     setErrorMessage({ 'message': `a new blog ${newBlog.title} by ${newBlog.author} added.`, 'type': 'message' });
     setTimeout(() => {
       setErrorMessage({ 'message': null, 'type': null });
     }, 5000);
-    setNewBlog({ title: '', author: '', url: '' });
   };
 
   const updateLikes = async (id, updatedObject) => {
@@ -84,13 +70,13 @@ const App = () => {
     setRefreshData(!refreshData);
   };
 
-  const removeBlog = async(id) => {
+  const removeBlog = async (id) => {
     const returnedBlog = await blogService.remove(id);
     setRefreshData(!refreshData);
   };
 
   const blogsToShow = blogs
-    .filter(blog => blog.user.username == user?.username)
+    .filter(blog => blog.user.username === user?.username)
     .sort((a, b) => b.likes - a.likes);
 
   const loginForm = () => (
@@ -124,7 +110,7 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel='new note' ref={blogFormRef}>
-      <BlogForm newBlog={newBlog} handleSubmit={addBlog} handleChange={handleChange} />
+      <BlogForm createBlog={addBlog} />
     </Togglable>
   );
 
@@ -138,13 +124,33 @@ const App = () => {
           {user.name} logged in <LogOutButton />
         </p>
         {blogForm()}
+
+        {blogsToShow.map(blog =>
+          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} removeBlog={removeBlog} />
+        )}
       </div>
       }
-      {blogsToShow.map(blog =>
-        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} removeBlog={removeBlog} />
-      )}
     </div>
   );
+
+
+  // return (
+  //   <div>
+  //     <h2>blogs</h2>
+  //     <Notification info={errorMessage} />
+  //     {!user && loginForm()}
+  //     {user && <div>
+  //       <p>
+  //         {user.name} logged in <LogOutButton />
+  //       </p>
+  //       {blogForm()}
+  //     </div>
+  //     }
+  //     {blogsToShow.map(blog =>
+  //       <Blog key={blog.id} blog={blog} updateLikes={updateLikes} removeBlog={removeBlog} />
+  //     )}
+  //   </div>
+  // );
 };
 
 
