@@ -76,7 +76,6 @@ const App = () => {
   };
 
   const blogsToShow = blogs
-    .filter(blog => blog.user.username === user?.username)
     .sort((a, b) => b.likes - a.likes);
 
   const loginForm = () => (
@@ -85,8 +84,9 @@ const App = () => {
         username
         <input
           type="text"
+          id='username'
           value={username}
-          name="Username"
+          name="username"
           onChange={({ target }) => setUsername(target.value)}
         />
       </div>
@@ -94,22 +94,23 @@ const App = () => {
         password
         <input
           type="password"
+          id='password'
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button type="submit">login</button>
+      <button type="submit" id='login-button'>login</button>
     </form>
   );
 
 
   const LogOutButton = () => (
-    <button type='submit' onClick={handleLogout}>logout</button>
+    <button type='submit' id="logout-button" onClick={handleLogout}>logout</button>
   );
 
   const blogForm = () => (
-    <Togglable buttonLabel='new note' ref={blogFormRef}>
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
     </Togglable>
   );
@@ -126,7 +127,7 @@ const App = () => {
         {blogForm()}
 
         {blogsToShow.map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} removeBlog={removeBlog} />
+          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} removeBlog={removeBlog} currentUser={user} />
         )}
       </div>
       }

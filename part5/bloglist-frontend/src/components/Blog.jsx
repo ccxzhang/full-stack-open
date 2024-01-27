@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, updateLikes, removeBlog }) => {
+const Blog = ({ blog, updateLikes, removeBlog, currentUser }) => {
 
   const [visible, setVisible] = useState(false);
 
@@ -34,6 +34,8 @@ const Blog = ({ blog, updateLikes, removeBlog }) => {
     }
   };
 
+  const isUserAuthorized = currentUser && blog.user && currentUser.username === blog.user.username;
+
   return (
     <div style={blogStyle} className='blog'>
       <div className='title-author'>{blog.title} {blog.author}</div>
@@ -46,7 +48,7 @@ const Blog = ({ blog, updateLikes, removeBlog }) => {
           <button type="submit" onClick={hanldeUpdate}>like</button>
         </ul>
         <ul> {blog?.user?.name} </ul>
-        <button type="submit" onClick={handleDelete}>remove</button>
+        {isUserAuthorized && <button type="submit" onClick={handleDelete}>remove</button>}
       </>}
     </div>
   );
