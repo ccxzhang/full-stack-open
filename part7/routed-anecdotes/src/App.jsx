@@ -4,17 +4,29 @@ import {
   Routes, Route, Link,
   useMatch, useNavigate, Navigate
 } from 'react-router-dom'
+import { Table, Button, Navbar, Nav } from 'react-bootstrap'
 
 const Menu = () => {
   const padding = {
     paddingRight: 5
   }
   return (
-    <div>
-      <Link style={padding} to="/">anecdotes</Link>
-      <Link style={padding} to="/create">create new</Link>
-      <Link style={padding} to="/about">about</Link>
-    </div>
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto">
+          <Nav.Link href="#" as="span">
+            <Link style={padding} to="/">anecdotes</Link>
+          </Nav.Link>
+          <Nav.Link href="#" as="span">
+            <Link style={padding} to="/create">create new</Link>
+          </Nav.Link>
+          <Nav.Link href="#" as="span">
+            <Link style={padding} to="/about">about</Link>
+          </Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   )
 }
 
@@ -31,12 +43,22 @@ const Anecdote = ({ anecdote }) => (
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
+    <Table striped>
+      <tbody>
+        {anecdotes.map(anecdote =>
+          <tr key={anecdote.id} >
+            <td>
+              <Link to={`/anecdotes/${anecdote.id}`}>
+                {anecdote.content}</Link>
+            </td>
+            <td>
+              {anecdote.votes}
+            </td>
+          </tr>)}
+      </tbody>
+    </Table>
     <ul>
-      {anecdotes.map(anecdote =>
-        <li key={anecdote.id} >
-          <Link to={`/anecdotes/${anecdote.id}`}>
-            {anecdote.content}</Link>
-        </li>)}
+
     </ul>
   </div>
 )
@@ -67,7 +89,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
-  
+
   const navigate = useNavigate()
 
   const handleSubmit = (event) => {
@@ -97,7 +119,7 @@ const CreateNew = (props) => {
           url for more info
           <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
         </div>
-        <button>create</button>
+        <Button variant='primary' type='submit'>create</Button>
       </form>
     </div>
   )
@@ -150,9 +172,9 @@ const App = () => {
     : null
 
   return (
-    <div>
-      <h1>Software anecdotes</h1>
+    <div className='container'>
       <Menu />
+      <h1>Software anecdotes</h1>
       <Routes>
         <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
