@@ -9,12 +9,12 @@ const getAll = async () => {
   return response.data;
 };
 
-const setUser = (user) => {
+const saveUserToken = (user) => {
   window.localStorage.setItem('loggedInUser', JSON.stringify(user));
   token = user.token;
 };
 
-const getUser = () => {
+const getSavedUser = () => {
   const loggedUserJSON = window.localStorage.getItem('loggedInUser');
   if (loggedUserJSON) {
     const user = JSON.parse(loggedUserJSON);
@@ -29,4 +29,4 @@ const clearUser = () => {
   token = null;
 };
 
-export default { getAll, getUser, clearUser, setUser };
+export default { getAll, getSavedUser, clearUser, saveUserToken };

@@ -52,7 +52,7 @@ const BlogForm = () => {
   );
 };
 
-BlogForm.PropTypes = {
+BlogForm.propTypes = {
   createBlog: PropTypes.func.isRequired,
 };
 

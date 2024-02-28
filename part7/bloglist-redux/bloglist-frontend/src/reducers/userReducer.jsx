@@ -5,7 +5,7 @@ import userService from '../services/user';
 import { setNotification } from './notificationReducer';
 
 const userSlice = createSlice({
-  name: 'user',
+  name: 'users',
   initialState: null,
   reducers: {
     setUser(state, action) {
@@ -19,7 +19,7 @@ export default userSlice.reducer;
 
 export const initializeUsers = () => {
   return async (dispatch) => {
-    const users = await userService.getUser();
+    const users = await userService.getAll();
     dispatch(setUser(users));
   };
 };

@@ -1,8 +1,11 @@
 import { useDispatch } from 'react-redux';
-import { login } from '../reducers/loginReducer';
+import { logInUser } from '../reducers/loginReducer';
+import { initializeBlogs } from '../reducers/blogReducer';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -10,7 +13,10 @@ const LoginForm = () => {
       username: event.target.username.value,
       password: event.target.password.value,
     };
-    dispatch(login(credential));
+    event.target.username.value = '';
+    event.target.password.value = '';
+    dispatch(logInUser(credential));
+    navigate('/');
   };
 
   return (
@@ -29,7 +35,7 @@ const LoginForm = () => {
           <input
             type="password"
             id="password"
-            name="Password"
+            name="password"
           />
         </div>
         <button type="submit" id="login-button">

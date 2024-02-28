@@ -4,33 +4,42 @@ import blogService from '../services/blogs';
 import userService from '../services/user';
 import { setNotification } from './notificationReducer';
 
-
 const logInSlice = createSlice({
   name: 'login',
   initialState: null,
   reducers: {
-    login(state, action) {
+    LogIn(state, action) {
       return action.payload;
     },
-    logout(state, action) {
+    LogOut(state, action) {
       return null;
     },
   },
 });
 
-export const { login, logout } = logInSlice.actions;
+export const { LogIn, LogOut } = logInSlice.actions;
 export default logInSlice.reducer;
+
+export const reloadSavedUser = () => {
+  return async (dispatch) => {
+    const loggedInUser = await userService.getSavedUser();
+    if (loggedInUser) {
+      dispatch(LogIn(loggedInUser));
+      blogService.setToken(loggedInUser.token);
+    }
+  };
+};
 
 export const logInUser = (credential) => {
   return async (dispatch) => {
     try {
       const { username, password } = credential;
       const user = await loginService.login({ username, password });
-      dispatch(login(user));
-      userService.setUser(user);
+      dispatch(LogIn(user));
+      userService.saveUserToken(user);
       blogService.setToken(user.token);
     } catch (exception) {
-      dispatch(setNotification('Wrong username or password'));
+      dispatch(setNotification('Wrong username or password', 5 ,'error'));
     }
   };
 };
@@ -38,6 +47,6 @@ export const logInUser = (credential) => {
 export const logOutUser = () => {
   return async (dispatch) => {
     userService.clearUser();
-    dispatch(logout());
+    dispatch(LogOut());
   };
 };

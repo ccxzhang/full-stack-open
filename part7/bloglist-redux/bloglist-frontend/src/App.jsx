@@ -2,69 +2,91 @@ import { useState, useEffect, useRef } from 'react';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
-import blogService from './services/blogs';
-import userService from './services/user';
+import Users from './components/Users';
+import UserView from './components/User';
+import Notification from './components/Notification';
 import { useDispatch, useSelector } from 'react-redux';
 import { initializeBlogs } from './reducers/blogReducer';
-import { logOutUser } from './reducers/loginReducer';
+import { LogIn, logOutUser, reloadSavedUser } from './reducers/loginReducer';
 import { initializeUsers } from './reducers/userReducer';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+} from 'react-router-dom';
+import Blog from './components/Blog';
 
 const App = () => {
-
-  const login = useSelector(state => state.login);
-
+  const login = useSelector((state) => state.login);
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(reloadSavedUser());
     dispatch(initializeBlogs());
     dispatch(initializeUsers());
   }, [dispatch]);
 
-
-  const blogFormRef = useRef();
-
+  const handleLogOut = async (event) => {
+    event.preventDefault();
+    dispatch(logOutUser());
+  };
 
   const LogOutButton = () => (
-    <button type="submit" id="logout-button" onClick={dispatch(logOutUser())}>
+    <button type="submit" id="logout-button" onClick={handleLogOut}>
       logout
     </button>
   );
 
-
-
-  return (
+  const Home = () => (
     <div>
       <h2>blogs</h2>
-      {/* <Notification info={errorMessage} /> */}
-      {!login && LoginForm()}
-      {login && (
-        <div>
-          <p>
-            {login.name} logged in <LogOutButton />
-          </p>
-          {BlogForm()}
-          {BlogList()}
-        </div>
-      )}
+      <Notification />
+      <div>
+        <BlogForm />
+        <BlogList />
+      </div>
     </div>
   );
 
-  // return (
-  //   <div>
-  //     <h2>blogs</h2>
-  //     <Notification info={errorMessage} />
-  //     {!user && loginForm()}
-  //     {user && <div>
-  //       <p>
-  //         {user.name} logged in <LogOutButton />
-  //       </p>
-  //       {blogForm()}
-  //     </div>
-  //     }
-  //     {blogsToShow.map(blog =>
-  //       <Blog key={blog.id} blog={blog} updateLikes={updateLikes} removeBlog={removeBlog} />
-  //     )}
-  //   </div>
-  // );
+  const padding = {
+    padding: 5,
+  };
+
+  if (!login) {
+    return (
+      <div>
+        <h2>log in to application</h2>
+        <Notification />
+        <LoginForm />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div>
+        <Link style={padding} to="/">
+          home
+        </Link>
+        <Link style={padding} to="/users">
+          users
+        </Link>
+        <>
+          <em>{login?.name} logged in</em>
+          <LogOutButton />
+        </>
+        <Notification />
+      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={login ? <Home /> : <LoginForm />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserView />} />
+        <Route path="/blogs/:id" element={<Blog />} />
+      </Routes>
+    </div>
+  );
 };
 
 export default App;
