@@ -9,13 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { initializeBlogs } from './reducers/blogReducer';
 import { LogIn, logOutUser, reloadSavedUser } from './reducers/loginReducer';
 import { initializeUsers } from './reducers/userReducer';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Navigate,
-} from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import Blog from './components/Blog';
 
 const App = () => {
@@ -78,13 +72,15 @@ const App = () => {
         </>
         <Notification />
       </div>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={login ? <Home /> : <LoginForm />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<UserView />} />
-        <Route path="/blogs/:id" element={<Blog />} />
-      </Routes>
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={login ? <Home /> : <LoginForm />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<UserView />} />
+          <Route path="/blogs/:id" element={<Blog />} />
+        </Routes>
+      </div>
     </div>
   );
 };

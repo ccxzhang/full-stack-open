@@ -24,18 +24,24 @@ const create = async (newObject) => {
 };
 
 const update = async (id, updatedObject) => {
-  const request = axios.put(`${baseUrl}/${id}`, updatedObject);
-  const response = await request;
-  return response.data;
+  const request = await axios.put(`${baseUrl}/${id}`, updatedObject);
+  return request.data;
 };
 
 const remove = async (id) => {
   const config = {
     headers: { Authorization: token },
   };
-  const request = axios.delete(`${baseUrl}/${id}`, config);
-  const response = await request;
-  return response.data;
+  const request = await axios.delete(`${baseUrl}/${id}`, config);
+  return request.data;
+};
+
+const comment = async (id, comment) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const request = await axios.post(`${baseUrl}/${id}/comments`, { comment }, config);
+  return request.data;
 };
 
 export default {
@@ -44,4 +50,5 @@ export default {
   create,
   update,
   remove,
+  comment
 };

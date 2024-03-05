@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addLike, deleteBlog } from '../reducers/blogReducer';
+import { addLike, deleteBlog, commentBlog } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -27,7 +27,8 @@ const Blog = () => {
     }
   };
 
-  const addComment = () => {
+  const addComment = (event) => {
+    dispatch(commentBlog(blog.id, comment));
     setComment('');
   };
 
@@ -39,7 +40,7 @@ const Blog = () => {
   }
 
   return (
-    <div>
+    <div className='blog'>
       <h1>Blog App</h1>
       <h2>
         <b>
@@ -55,13 +56,16 @@ const Blog = () => {
       {isUserAuthorized && <button onClick={handleDelete}>remove</button>}
       <h3>Comments</h3>
       <div>
-        <input
-          id="comment-input"
-          type="text"
-          name="comment"
-          onChange={({ target }) => setComment(target.value)}
-        />
-        <button onClick={addComment}>add comment</button>
+        <input value={comment} onChange={(e) => setComment(e.target.value)} />
+        <button type="submit" onClick={addComment}>
+          add comment
+        </button>
+
+        <ul>
+          {blog.comments.map((c, i) => (
+            <li key={i}>{c}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );

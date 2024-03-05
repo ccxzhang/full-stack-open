@@ -4,9 +4,7 @@ const User = require('../models/users');
 const jwt = require('jsonwebtoken');
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({})
-    .populate('user', { username: 1, name: 1 });
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
   response.json(blogs);
 });
 
@@ -32,7 +30,7 @@ blogsRouter.post('/', async (request, response) => {
       author: body.author,
       url: body.url,
       likes: body?.likes | 0,
-      user: user.id
+      user: user.id,
     });
 
     const savedblog = await blog.save();
@@ -49,26 +47,41 @@ blogsRouter.put('/:id', async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
   };
 
-  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  });
   response.json(savedBlog);
-
 });
 
+// Add for comments section
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body;
+  const blog = await Blog.findById(request.params.id);
+
+  blog.comments = blog.comments.concat(comment);
+  await blog.save();
+
+  response.json(blog);
+});
 
 blogsRouter.delete('/:id', async (request, response) => {
-  const user = request.user; 
-  if (!user){
-    return response.status(401).json({ error: 'Unauthorized to delete the blog' }); 
+  const user = request.user;
+  if (!user) {
+    return response
+      .status(401)
+      .json({ error: 'Unauthorized to delete the blog' });
   }
   const blog = await Blog.findById(request.params.id);
   if (blog.user.toString() == user.id) {
     await Blog.findByIdAndDelete(request.params.id);
     return response.status(204).send({ error: 'Blog not found' });
   } else {
-    return response.status(401).json({ error: 'Unauthorized to delete the blog' });
+    return response
+      .status(401)
+      .json({ error: 'Unauthorized to delete the blog' });
   }
 });
 
