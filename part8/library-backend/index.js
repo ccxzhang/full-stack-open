@@ -1,6 +1,21 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { v1: uuid } = require("uuid");
+const mongoose = require("mongoose");
+
+mongoose.set("strictQuery", false);
+const Author = require("./models/author");
+
+require("dotenv").config();
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connection to MongoDB:", error.message);
+  });
 
 let authors = [
   {
@@ -161,17 +176,15 @@ const resolvers = {
   Mutation: {
     addBook: (root, args) => {
       const book = { ...args, id: uuid() };
-      const names = authors.map(author => author.name);
-      if (!names.includes(args.author)){
-        authors = authors.concat({name: args.author, id: uuid()})
+      const names = authors.map((author) => author.name);
+      if (!names.includes(args.author)) {
+        authors = authors.concat({ name: args.author, id: uuid() });
       }
       books = books.concat(book);
       return book;
     },
     editAuthor: (root, args) => {
-      const authorsToEdit = authors.find(
-        (author) => author.name === args.name
-      );
+      const authorsToEdit = authors.find((author) => author.name === args.name);
       const editedAuthor = {
         ...authorsToEdit,
         born: args.setBornTo,

@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "ts-node": "ts-node",
     "bmiCalculator": "ts-node bmiCalculator.ts",
-    "exerciseCalculator": "ts-node exerciseCalculator.ts" 
+    "exerciseCalculator": "ts-node exerciseCalculator.ts",
+    "start": "ts-node index.ts",
+    "dev": "ts-node-dev index.ts",
+    "lint": "eslint --ext .ts ."
   },
   "author": "Charlie Zhang",
   "license": "ISC",
@@ -17,7 +20,14 @@
     "@types/lodash": "^4.14.202",
     "@types/mongoose": "^5.11.97",
     "@types/react": "^18.2.63",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "express": "^4.18.3"
   }
 }
