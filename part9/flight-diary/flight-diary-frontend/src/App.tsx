@@ -19,6 +19,7 @@ function App() {
     event.preventDefault();
     createDairy({ date, visibility, weather, comment }).then((data) => {
       setDiaries(diaries.concat(data));
+
       setComment("");
     });
     setDiaries([]);
